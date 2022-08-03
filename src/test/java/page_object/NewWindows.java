@@ -1,28 +1,27 @@
 package page_object;
 
-import main_page_elements.PageElements;
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 // Ожидания загрузки форм и окон
-public class Waitings extends PageElements{
+public class NewWindows {
 
     private final WebDriver driver;
+    //локатор названия окна подтверждения оформления заказа
+    private final By orderConfirmWindowTitle = By.xpath(".//div[(@class = 'Order_ModalHeader__3FDaJ') and (text() = 'Хотите оформить заказ?')]");
+    //локатор кнопки "Да"
+    private final By yesButton = By.xpath(".//button[text() = 'Да']");
+    //локатор названия окна "заказ оформлен"
+    private final By orderCompleteWindowTitle = By.xpath(".//div[(@class = 'Order_ModalHeader__3FDaJ') and (text() = 'Заказ оформлен')]");
+
     //конструктор класса
-    public Waitings(WebDriver driver) {
+    public NewWindows(WebDriver driver) {
         this.driver = driver;
     }
-    //мотод ожидания появления названия формы "Для кого самокат"
-    public void waitForPersonalInfoTitle() {
-        new WebDriverWait(driver, 3)
-                .until(ExpectedConditions.presenceOfElementLocated(personalInfoTitle));
-    }
-    //мотод для ожидания появления названия формы "Про аренду"
-    public void waitForAboutRentTitle() {
-        new WebDriverWait(driver, 3)
-                .until(ExpectedConditions.presenceOfElementLocated(aboutRentTitle));
-    }
+
+
     //метод для ожидания появления названия окна "Хотите оформить заказ?"
     public void waitForOrderConfirmWindowTitle() {
         new WebDriverWait(driver, 3)
@@ -35,18 +34,19 @@ public class Waitings extends PageElements{
                 .until(ExpectedConditions.presenceOfElementLocated(orderCompleteWindowTitle));
     }
     //метод для ожидания загрузки логотипа Яндекса на главной странице Яндекса
-    public void waitForMainYandexPage() {
+    public void isYandexPageDisplayed() {
         new WebDriverWait(driver, 3)
                 .until(ExpectedConditions.presenceOfElementLocated(By.className("home-logo__default")));
+        Assert.assertEquals("https://yandex.ru/", driver.getCurrentUrl());
     }
-    //метод для ожидания кликабельности поля ввода номера заказа
-    public void waitForOrderNumberFieldIsClickable() {
-        new WebDriverWait(driver, 3)
-                .until(ExpectedConditions.elementToBeClickable(orderNumberField));
+    //метод нажатия кнопки "Да"
+    public void clickYesButton() {
+        driver.findElement(yesButton).click();
     }
-    //метод для ожидания загрузки лендинга самоката
-    public void waitForScooterMainPageLoad() {
-        new WebDriverWait(driver, 3)
-                .until(ExpectedConditions.presenceOfElementLocated(mainPageText));
+    //метод перехода на последнюю открытую вкладку
+    public void newTab() {
+        for (String tab: driver.getWindowHandles()) {
+            driver.switchTo().window(tab);
+        }
     }
 }

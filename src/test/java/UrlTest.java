@@ -1,5 +1,4 @@
 import io.github.bonigarcia.wdm.WebDriverManager;
-import main_page_elements.PageElements;
 
 import org.junit.After;
 import org.junit.Before;
@@ -7,15 +6,12 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import page_object.Waitings;
+import page_object.NewWindows;
+import page_object.MainPage;
 
-import static org.junit.Assert.assertEquals;
-
-public class UrlTest extends PageElements{
+public class UrlTest {
 
     WebDriver driver;
-
-
     @Before
     public void setup() {
         WebDriverManager.chromedriver().setup();
@@ -30,24 +26,24 @@ public class UrlTest extends PageElements{
     //Проверка перехода на главную станицу "Самоката" после нажатия на логотип "Самоката"
     @Test
     public void mainPageLogoTest() {
-        driver.get(pageURL + "order");
-        driver.findElement(cookieConfirmButton).click();
-        driver.findElement(scooterLogo).click();
-        assertEquals(pageURL, driver.getCurrentUrl());
+        driver.get("https://qa-scooter.praktikum-services.ru/order");
+        MainPage objMainPage = new MainPage(driver);
+        objMainPage.cookieConfirm();
+        objMainPage.clickScooterLogo();
+        objMainPage.isMainPageDisplayed("https://qa-scooter.praktikum-services.ru/");
     }
 
     //Проверка открытия новой вкладки с главной станицей Яндекса после нажатия на логотип Яндекса
     //На Firefox данный тест проходится быстрее, чем Chrome
     @Test
     public void yandexLogoTest() {
-        driver.get(pageURL);
-        driver.findElement(cookieConfirmButton).click();
-        driver.findElement(yandexLogo).click();
-        for (String tab: driver.getWindowHandles()) {
-            driver.switchTo().window(tab);
-        }
-        Waitings waiting = new Waitings(driver);
-        waiting.waitForMainYandexPage();
-        assertEquals(yandexURL, driver.getCurrentUrl());
+        driver.get("https://qa-scooter.praktikum-services.ru/");
+        MainPage objMainPage = new MainPage(driver);
+        objMainPage.waitForScooterMainPageLoad();
+        objMainPage.cookieConfirm();
+        objMainPage.clickYandexLogo();
+        NewWindows objNewWindows = new NewWindows(driver);
+        objNewWindows.newTab();
+        objNewWindows.isYandexPageDisplayed();
     }
 }

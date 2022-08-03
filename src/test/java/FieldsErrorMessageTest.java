@@ -1,8 +1,6 @@
 import io.github.bonigarcia.wdm.WebDriverManager;
-import main_page_elements.PageElements;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,9 +10,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
+import page_object.MainPage;
+import page_object.PersonalInfoPage;
+
 
 @RunWith(Parameterized.class)
-public class FieldsErrorMessageTest extends PageElements{
+public class FieldsErrorMessageTest {
 
     WebDriver driver;
 
@@ -27,11 +28,11 @@ public class FieldsErrorMessageTest extends PageElements{
     @Parameterized.Parameters
     public static Object[][] getError() {
         return new Object[][] {
-                {nameErrorField},
-                {surnameErrorField},
-                {addressErrorField},
-                {metroErrorField},
-                {phoneErrorField},
+                {By.xpath(".//div[text() = 'Введите корректное имя']")},
+                {By.xpath(".//div[text() = 'Введите корректную фамилию']")},
+                {By.xpath(".//div[text() = 'Введите корректный адрес']")},
+                {By.xpath(".//div[text() = 'Выберите станцию']")},
+                {By.xpath(".//div[text() = 'Введите корректный номер']")},
         };
     }
 
@@ -49,9 +50,11 @@ public class FieldsErrorMessageTest extends PageElements{
     //Тесты проверки сообщений об ошибках в полях ввода формы "Для кого самокат"
     @Test
     public void mainPageLogoTest() {
-        driver.get(pageURL + "order");
-        driver.findElement(cookieConfirmButton).click();
-        driver.findElement(furtherButton).click();
-        Assert.assertTrue(driver.findElement(errorField).isDisplayed());
+        driver.get("https://qa-scooter.praktikum-services.ru/order");
+        MainPage objMainPage = new MainPage(driver);
+        objMainPage.cookieConfirm();
+        PersonalInfoPage objPersonalInfoPage = new PersonalInfoPage(driver);
+        objPersonalInfoPage.clickFurtherBotton();
+        objPersonalInfoPage.isErrorDisplayed(errorField);
     }
 }

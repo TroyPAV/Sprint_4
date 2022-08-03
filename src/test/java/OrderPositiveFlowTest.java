@@ -6,19 +6,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
-import main_page_elements.PageElements;
-import page_object.FillingOrderFormAboutRent;
-import page_object.FillingOrderFormPersonalInfo;
-import page_object.Waitings;
+import page_object.AboutRentPage;
+import page_object.NewWindows;
+import page_object.PersonalInfoPage;
+import page_object.MainPage;
 
 @RunWith(Parameterized.class)
-public class OrderPositiveFlowTest extends PageElements{
+public class OrderPositiveFlowTest {
 
     WebDriver driver;
 
@@ -47,10 +45,10 @@ public class OrderPositiveFlowTest extends PageElements{
     @Parameterized.Parameters
     public static Object[][] getInfoForFillingOrder() {
         return new Object[][] {
-                {topOrderButton,"Иван", "Иванов", "ул.Ивановская 12", "Сокольники", "+79213456789", "10.10.2022", "сутки", "Комментарий 1"},
-                {bottomOrderButton,"Иван", "Иванов", "ул.Ивановская 12", "Сокольники", "+79213456789", "10.10.2022", "сутки", "Комментарий 1"},
-                {topOrderButton,"Афанасий", "Петров", "ул.Стародеревенская 21", "Чистые пруды", "89219876543", "31.12.2022", "двое суток", "Комментарий 21"},
-                {bottomOrderButton,"Афанасий", "Петров", "ул.Стародеревенская 21", "Чистые пруды", "89219876543", "31.12.2022", "двое суток", "Комментарий 21"},
+                {By.className("Button_Button__ra12g"),"Иван", "Иванов", "ул.Ивановская 12", "Сокольники", "+79213456789", "10.10.2022", "сутки", "Комментарий 1"},
+                {By.xpath(".//button[(@class = 'Button_Button__ra12g Button_Middle__1CSJM') and (text() = 'Заказать')]"),"Иван", "Иванов", "ул.Ивановская 12", "Сокольники", "+79213456789", "10.10.2022", "сутки", "Комментарий 1"},
+                {By.className("Button_Button__ra12g"),"Афанасий", "Петров", "ул.Стародеревенская 21", "Чистые пруды", "89219876543", "31.12.2022", "двое суток", "Комментарий 21"},
+                {By.xpath(".//button[(@class = 'Button_Button__ra12g Button_Middle__1CSJM') and (text() = 'Заказать')]"),"Афанасий", "Петров", "ул.Стародеревенская 21", "Чистые пруды", "89219876543", "31.12.2022", "двое суток", "Комментарий 21"},
         };
     }
 
@@ -68,22 +66,23 @@ public class OrderPositiveFlowTest extends PageElements{
     //Тесты проверки позитивного сценария заказа самоката, используя ВЕРХНЮЮ и НИЖНЮЮ кнопки "Заказать"
     //и два набора валидных тестовых данных
     @Test
-    public void OrderTest() {
-        driver.get(pageURL);
-        Waitings waiting = new Waitings(driver);
-        waiting.waitForScooterMainPageLoad();
-        driver.findElement(cookieConfirmButton).click();
-        WebElement element = driver.findElement(button);
-        ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView();", element);
-        driver.findElement(button).click();
-        waiting.waitForPersonalInfoTitle();
-        FillingOrderFormPersonalInfo objFillingPersonalInfoForm = new FillingOrderFormPersonalInfo(driver);
-        objFillingPersonalInfoForm.fillingPersonalInfoForm(name, surname, address, metro, phoneNumber);
-        waiting.waitForAboutRentTitle();
-        FillingOrderFormAboutRent objFillingAboutRentForm = new FillingOrderFormAboutRent(driver);
-        objFillingAboutRentForm.fillingAboutRentForm(deliveryDate, rentalPeriod, comment);
-        waiting.waitForOrderConfirmWindowTitle();
-        driver.findElement(yesButton).click();
-        waiting.waitForOrderCompleteWindowTitle();
+    public void orderTest() {
+        driver.get("https://qa-scooter.praktikum-services.ru/");
+        MainPage objMainPage = new MainPage(driver);
+        objMainPage.waitForScooterMainPageLoad();
+        objMainPage.cookieConfirm();
+        objMainPage.clickOrderButtons(button);
+        PersonalInfoPage objPersonalInfoPage = new PersonalInfoPage(driver);
+        objPersonalInfoPage.waitForPersonalInfoTitle();
+        objPersonalInfoPage.fillingPersonalInfoForm(name, surname, address, metro, phoneNumber);
+        objPersonalInfoPage.clickFurtherBotton();
+        AboutRentPage objAboutRentPage = new AboutRentPage(driver);
+        objAboutRentPage.waitForAboutRentTitle();
+        objAboutRentPage.fillingAboutRentForm(deliveryDate, rentalPeriod, comment);
+        objAboutRentPage.clickOrderButton();
+        NewWindows objNewWindows = new NewWindows(driver);
+        objNewWindows.waitForOrderConfirmWindowTitle();
+        objNewWindows.clickYesButton();
+        objNewWindows.waitForOrderCompleteWindowTitle();
     }
 }
