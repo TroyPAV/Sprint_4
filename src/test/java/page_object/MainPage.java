@@ -10,6 +10,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class MainPage {
     private final WebDriver driver;
+    //url главной страницы "Самоката"
+    private final String mainPageURL = "https://qa-scooter.praktikum-services.ru/";
     //локатор поля "Самокат на пару дней"
     private final By mainPageText = By.xpath(".//div[@class = 'Home_Header__iJKdX']");
     //локатор кнопки-логотипа главной страницы Яндекса
@@ -18,6 +20,10 @@ public class MainPage {
     private final By scooterLogo = By.className("Header_LogoScooter__3lsAR");
     //локатор кнопки принятия Cookie
     private final By cookieConfirmButton = By.id("rcc-confirm-button");
+    //локатор верхей кнопки "Заказать"
+    private final By topButton = By.className("Button_Button__ra12g");
+    //локатор нижней кнопки "Заказать"
+    private final By bottomButton = By.xpath(".//button[(@class = 'Button_Button__ra12g Button_Middle__1CSJM') and (text() = 'Заказать')]");
     //локатор поля ввода номера заказа
     private final By orderNumberField = By.xpath(".//input[@placeholder = 'Введите номер заказа']");
     //локатор кнопки "Статус заказа"
@@ -26,10 +32,19 @@ public class MainPage {
     private final By goButton = By.xpath(".//button[text() = 'Go!']");
     //локатор картинки "Такого заказа нет"
     private final By notFountImg = By.xpath(".//img[@alt = 'Not found']");
+    //массив локаторов вопросов в списке "Вопросы о важном"
+    private final By[] questionIds = {By.id("accordion__heading-0"), By.id("accordion__heading-1"),
+                                      By.id("accordion__heading-2"), By.id("accordion__heading-3"),
+                                      By.id("accordion__heading-4"), By.id("accordion__heading-5"),
+                                      By.id("accordion__heading-6"), By.id("accordion__heading-7")};
 
     //конструктор класса
     public MainPage(WebDriver driver) {
         this.driver = driver;
+    }
+    //метод вызова главной страницы Самоката
+    public void getScooterMainPage() {
+        driver.get(mainPageURL);
     }
     //метод для ожидания загрузки лендинга самоката
     public void waitForScooterMainPageLoad() {
@@ -45,12 +60,20 @@ public class MainPage {
         driver.findElement(yandexLogo).click();
     }
     //метод проверки отображения главной страницы
-    public void isMainPageDisplayed(String mainPageUrl) {
-        Assert.assertEquals(mainPageUrl, driver.getCurrentUrl());
+    public void isMainPageDisplayed() {
+        Assert.assertEquals(mainPageURL, driver.getCurrentUrl());
     }
     //метод принятия сообщения об использоввании Cookie
     public void cookieConfirm() {
         driver.findElement(cookieConfirmButton).click();
+    }
+    //метод возвращающий локатор вехней кнопки "Заказать"
+    public By getTopButton() {
+        return topButton;
+    }
+    //метод возвращающий локатор нижней кнопки "Заказать"
+    public By getBottomButton() {
+        return bottomButton;
     }
     //метод для ожидания кликабельности поля ввода номера заказа
     public void waitForOrderNumberFieldIsClickable() {
@@ -82,15 +105,18 @@ public class MainPage {
         driver.findElement(button).click();
     }
     //метод клика на вопросы в списке "Вопросы о важном"
-    public void clickQuestionButtons(String questionId) {
-        WebElement element = driver.findElement(By.id(questionId));
+    public void clickQuestionButtons(By questionId) {
+        WebElement element = driver.findElement(questionId);
         ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView();", element);
-        driver.findElement(By.id(questionId)).click();
+        driver.findElement(questionId).click();
+    }
+    //метод вызова локатора элемента массива вопросов
+    public By getQuestionId(int i){
+        return questionIds[i];
     }
     //метод сравнения текста в ответах на "Вопросы о важном"
     public void isAnswerDisplayed(String answerText) {
         String xpathToAnswerText = String.format(".//p[text()='%s']", answerText);
         Assert.assertTrue(driver.findElement(By.xpath(xpathToAnswerText)).isDisplayed());
     }
-
 }

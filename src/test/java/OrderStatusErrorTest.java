@@ -5,13 +5,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-
 import org.openqa.selenium.firefox.FirefoxDriver;
+
 import page_object.MainPage;
 
 public class OrderStatusErrorTest {
 
-    WebDriver driver;
+    private WebDriver driver;
 
     @Before
     public void setup() {
@@ -28,8 +28,8 @@ public class OrderStatusErrorTest {
     //при вводе несуществующего номера заказа
     @Test
     public void orderStatusErrorTest() {
-        driver.get("https://qa-scooter.praktikum-services.ru/");
         MainPage objMainPage = new MainPage(driver);
+        objMainPage.getScooterMainPage();
         objMainPage.waitForScooterMainPageLoad();
         objMainPage.cookieConfirm();
         objMainPage.clickOrderStatusButton();

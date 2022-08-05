@@ -18,8 +18,7 @@ import page_object.MainPage;
 @RunWith(Parameterized.class)
 public class OrderPositiveFlowTest {
 
-    WebDriver driver;
-
+    private static WebDriver driver;
     private final By button;
     private final String name;
     private final String surname;
@@ -44,11 +43,12 @@ public class OrderPositiveFlowTest {
 
     @Parameterized.Parameters
     public static Object[][] getInfoForFillingOrder() {
+        MainPage objButtons = new MainPage(driver);
         return new Object[][] {
-                {By.className("Button_Button__ra12g"),"Иван", "Иванов", "ул.Ивановская 12", "Сокольники", "+79213456789", "10.10.2022", "сутки", "Комментарий 1"},
-                {By.xpath(".//button[(@class = 'Button_Button__ra12g Button_Middle__1CSJM') and (text() = 'Заказать')]"),"Иван", "Иванов", "ул.Ивановская 12", "Сокольники", "+79213456789", "10.10.2022", "сутки", "Комментарий 1"},
-                {By.className("Button_Button__ra12g"),"Афанасий", "Петров", "ул.Стародеревенская 21", "Чистые пруды", "89219876543", "31.12.2022", "двое суток", "Комментарий 21"},
-                {By.xpath(".//button[(@class = 'Button_Button__ra12g Button_Middle__1CSJM') and (text() = 'Заказать')]"),"Афанасий", "Петров", "ул.Стародеревенская 21", "Чистые пруды", "89219876543", "31.12.2022", "двое суток", "Комментарий 21"},
+                {objButtons.getTopButton(),"Иван", "Иванов", "ул.Ивановская 12", "Сокольники", "+79213456789", "10.10.2022", "сутки", "Комментарий 1"},
+                {objButtons.getBottomButton(),"Иван", "Иванов", "ул.Ивановская 12", "Сокольники", "+79213456789", "10.10.2022", "сутки", "Комментарий 1"},
+                {objButtons.getTopButton(),"Афанасий", "Петров", "ул.Стародеревенская 21", "Чистые пруды", "89219876543", "31.12.2022", "двое суток", "Комментарий 21"},
+                {objButtons.getBottomButton(),"Афанасий", "Петров", "ул.Стародеревенская 21", "Чистые пруды", "89219876543", "31.12.2022", "двое суток", "Комментарий 21"},
         };
     }
 
@@ -67,8 +67,8 @@ public class OrderPositiveFlowTest {
     //и два набора валидных тестовых данных
     @Test
     public void orderTest() {
-        driver.get("https://qa-scooter.praktikum-services.ru/");
         MainPage objMainPage = new MainPage(driver);
+        objMainPage.getScooterMainPage();
         objMainPage.waitForScooterMainPageLoad();
         objMainPage.cookieConfirm();
         objMainPage.clickOrderButtons(button);

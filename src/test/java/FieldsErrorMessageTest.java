@@ -17,8 +17,7 @@ import page_object.PersonalInfoPage;
 @RunWith(Parameterized.class)
 public class FieldsErrorMessageTest {
 
-    WebDriver driver;
-
+    private static WebDriver driver;
     private final By errorField;
 
     public FieldsErrorMessageTest(By errorField) {
@@ -27,12 +26,13 @@ public class FieldsErrorMessageTest {
 
     @Parameterized.Parameters
     public static Object[][] getError() {
+        PersonalInfoPage objError = new PersonalInfoPage(driver);
         return new Object[][] {
-                {By.xpath(".//div[text() = 'Введите корректное имя']")},
-                {By.xpath(".//div[text() = 'Введите корректную фамилию']")},
-                {By.xpath(".//div[text() = 'Введите корректный адрес']")},
-                {By.xpath(".//div[text() = 'Выберите станцию']")},
-                {By.xpath(".//div[text() = 'Введите корректный номер']")},
+                {objError.getNameError()},
+                {objError.getSurnameError()},
+                {objError.getAddressError()},
+                {objError.getMetroError()},
+                {objError.getPhoneError()},
         };
     }
 
@@ -50,10 +50,10 @@ public class FieldsErrorMessageTest {
     //Тесты проверки сообщений об ошибках в полях ввода формы "Для кого самокат"
     @Test
     public void mainPageLogoTest() {
-        driver.get("https://qa-scooter.praktikum-services.ru/order");
+        PersonalInfoPage objPersonalInfoPage = new PersonalInfoPage(driver);
+        objPersonalInfoPage.getScooterOrderPage();
         MainPage objMainPage = new MainPage(driver);
         objMainPage.cookieConfirm();
-        PersonalInfoPage objPersonalInfoPage = new PersonalInfoPage(driver);
         objPersonalInfoPage.clickFurtherBotton();
         objPersonalInfoPage.isErrorDisplayed(errorField);
     }

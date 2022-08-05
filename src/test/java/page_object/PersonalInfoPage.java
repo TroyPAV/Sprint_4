@@ -10,6 +10,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public class PersonalInfoPage {
 
     private final WebDriver driver;
+    //url формы заказа
+    private final String orderPageURL = "https://qa-scooter.praktikum-services.ru/order";
     //локатор названия формы "Для кого самокат"
     private final By personalInfoTitle = By.xpath(".//div[(@class = 'Order_Header__BZXOb') and (text() = 'Для кого самокат')]");
     //локатор поля ввода имени
@@ -39,7 +41,11 @@ public class PersonalInfoPage {
     public PersonalInfoPage(WebDriver driver) {
         this.driver = driver;
     }
-    //мотод ожидания появления названия формы "Для кого самокат"
+    //метод вызова страницы формы заказа самоката
+    public void getScooterOrderPage() {
+        driver.get(orderPageURL);
+    }
+    //метод ожидания появления названия формы "Для кого самокат"
     public void waitForPersonalInfoTitle() {
         new WebDriverWait(driver, 3)
                 .until(ExpectedConditions.presenceOfElementLocated(personalInfoTitle));
@@ -56,7 +62,7 @@ public class PersonalInfoPage {
     public void setAddress(String address) {
         driver.findElement(addressField).sendKeys(address);
     }
-    //медод выбора станции метро
+    //метод выбора станции метро
     public void setMetro(String metro) {
         driver.findElement(metroField).click();
         //локатор станции метро
@@ -75,6 +81,27 @@ public class PersonalInfoPage {
     public void isErrorDisplayed(By errorField) {
         Assert.assertTrue(driver.findElement(errorField).isDisplayed());
     }
+    //метод получения локатора сообщения об ошибке поля имени
+    public By getNameError() {
+        return nameErrorField;
+    }
+    //метод получения локатора сообщения об ошибке поля фамилии
+    public By getSurnameError() {
+        return surnameErrorField;
+    }
+    //метод получения локатора сообщения об ошибке поля адреса
+    public By getAddressError() {
+        return addressErrorField;
+    }
+    //метод получения локатора сообщения об ошибке поля метро
+    public By getMetroError() {
+        return metroErrorField;
+    }
+    //метод получения локатора сообщения об ошибке поля телефона
+    public By getPhoneError() {
+        return phoneErrorField;
+    }
+
     //метод заполнения формы заказа
     public void fillingPersonalInfoForm(String name, String surname, String address, String metro, String phoneNumber){
         setName(name);
